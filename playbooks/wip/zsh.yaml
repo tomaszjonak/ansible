@@ -1,0 +1,38 @@
+---
+- name: install zsh/ohmyzsh and set as default shell
+  hosts: localhost
+
+  tasks:
+  - name: install preconditions and zsh
+    become: yes
+    ansible.builtin.apt:
+      pkg: 
+      - curl
+      - git
+      - zsh
+  
+  - name: locate zsh binary
+    ansible.builtin.shell: which zsh
+    register: zsh_loc
+
+  - name: set zsh as default shell
+    become: yes
+    ansible.builtin.user:
+      user: "{{ ansible_env.USER }}"
+      shell: "{{ zsh_loc.stdout }}"
+  
+  - name: check if ohmyzsh is installed
+    stat:
+      path: "{{ ansible_env.HOME }}/.oh-my-zsh"
+    register: omz
+
+  - name: fetch ohmyzsh dropper
+    ansible.builtin.command: curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+    register: ohmyzsh_dropper
+    when: not omz.stat.isdir
+    register: dropper
+  
+  - name: run ohmyzsh dropper
+    ansible.builtin.shell:
+      free_form: "{{ dropper.stdout }}" 
+    when: not omz.stat.isdir
