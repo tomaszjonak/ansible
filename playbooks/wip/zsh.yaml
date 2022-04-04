@@ -10,7 +10,8 @@
       - curl
       - git
       - zsh
-  
+      - python3-pip
+
   - name: locate zsh binary
     ansible.builtin.shell: which zsh
     register: zsh_loc

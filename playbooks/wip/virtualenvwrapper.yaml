@@ -1,0 +1,16 @@
+---
+- name: install virtualenvwrapper
+  hosts: localhost
+
+  tasks:
+  - name: install pip3
+    become: yes
+    ansible.builtin.apt:
+      pkg:
+      - python3-pip
+
+  - name: install virtualenvwrapper
+    ansible.builtin.pip:
+      executable: pip3
+      name: virtualenvwrapper
+      extra_args: --user
