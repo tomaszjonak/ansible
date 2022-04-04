@@ -1,0 +1,44 @@
+---
+- name: install docker
+  hosts: localhost
+
+  tasks:
+  - name: install required packets
+    become: yes
+    ansible.builtin.apt:
+      pkg:
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+
+  - name: add docker gpg key
+    become: yes
+    ansible.builtin.apt_key:
+      id: 8D81803C0EBFCD88
+      url: https://download.docker.com/linux/debian/gpg
+      keyring: /usr/share/keyrings/docker-archive-keyring.gpg
+      state: present
+
+  - name: add docker repo
+    become: yes
+    ansible.builtin.apt_repository:
+      repo: deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian bullseye stable
+      state: present
+
+  - name: Update apt and install docker-ce
+    become: yes
+    ansible.builtin.apt:
+      update_cache: yes
+      state: latest
+      pkg:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - squashfs-tools
+  
+  - name: append docker group to $USER groups
+    ansible.builtin.user:
+      name: "{{ ansible_env.USER }}"
+      append: yes
+      groups: docker
