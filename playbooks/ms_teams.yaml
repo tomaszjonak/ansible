@@ -4,19 +4,20 @@
 
   tasks:
   - name: apt add key
+    become: true
     ansible.builtin.apt_key:
       url: https://packages.microsoft.com/keys/microsoft.asc
       id: EB3E94ADBE1229CF
       state: present
 
   - name: add ms-teams ppa
-    become: yes
+    become: true
     ansible.builtin.apt_repository:
       repo: deb [arch=amd64] https://packages.microsoft.com/repos/ms-teams stable main
       state: present
   
   - name: download ms-teams
-    become: yes
+    become: true
     ansible.builtin.apt:
       pkg: teams
       update_cache: yes

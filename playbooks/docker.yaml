@@ -4,7 +4,7 @@
 
   tasks:
   - name: install required packets
-    become: yes
+    become: true
     ansible.builtin.apt:
       pkg:
       - ca-certificates
@@ -13,7 +13,7 @@
       - lsb-release
 
   - name: add docker gpg key
-    become: yes
+    become: true
     ansible.builtin.apt_key:
       id: 8D81803C0EBFCD88
       url: https://download.docker.com/linux/debian/gpg
@@ -21,13 +21,13 @@
       state: present
 
   - name: add docker repo
-    become: yes
+    become: true
     ansible.builtin.apt_repository:
       repo: deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian bullseye stable
       state: present
 
   - name: Update apt and install docker-ce
-    become: yes
+    become: true
     ansible.builtin.apt:
       update_cache: yes
       state: latest
@@ -38,6 +38,7 @@
       - squashfs-tools
   
   - name: append docker group to $USER groups
+    become: true
     ansible.builtin.user:
       name: "{{ ansible_env.USER }}"
       append: yes
